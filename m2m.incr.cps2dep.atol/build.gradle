@@ -1,0 +1,102 @@
+plugins {
+	id "org.xtext.xtend" version "2.0.7"
+}
+
+xtext.version = "2.17.0"
+
+repositories {
+	mavenCentral()
+
+	// for ATL
+	maven { url "https://repo.eclipse.org/content/groups/releases/" }
+}
+
+configurations {
+	emftvm_compile
+}
+
+dependencies {
+	compile 'org.eclipse.xtend:org.eclipse.xtend.lib:2.17.0'
+
+	// could be compileOnly for ATOL, but must be compile for ATL
+	compile('org.eclipse.m2m.atl:org.eclipse.m2m.atl.emftvm.compiler:4.0.0-1') {
+		exclude group: 'org.eclipse.m2m.atl', module: 'org.eclipse.m2m.atl.emfvm'	// ignore incorrect dependency in eclipse repository
+	}
+
+	emftvm_compile('org.eclipse.m2m.atl:org.eclipse.m2m.atl.emftvm.ant.standalone:4.0.0-1')
+	
+	compile files(
+		'./lib/aof.jar'
+	)
+	compile 'log4j:log4j:1.2.17'
+	
+}
+
+apply plugin: 'eclipse'
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'java-library-distribution'
+
+eclipse {
+	project {
+	  name = 'm2m.incr.cps2dep.atol'
+	  buildCommand 'org.eclipse.jdt.core.javabuilder'
+	  buildCommand 'org.eclipse.buildship.core.gradleprojectbuilder'
+	  buildCommand 'org.eclipse.wst.common.project.facet.core.builder'
+
+	  natures 'org.eclipse.jdt.core.javanature',
+		  'org.eclipse.buildship.core.gradleprojectnature',
+		  'org.eclipse.wst.common.project.facet.core.nature',
+		  'org.eclipse.xtext.ui.shared.xtextNature',
+		  'org.eclipse.pde.PluginNature'
+	}
+}
+
+mainClassName = 'fr.eseo.atol.examples.cps.tests.IncrementalATL'
+applicationDefaultJvmArgs = ["-Xmx12288m"]
+sourceCompatibility = 1.8
+
+
+sourceSets {
+	main {
+		java {
+			srcDirs = [
+				'src',
+				'emf-gen',
+				'build/xtend/main'
+			]
+		}
+		resources {
+			srcDirs = ['src']
+		}
+	}
+}
+
+sourceSets {
+	main {
+		output.resourcesDir = "build/classes/main"
+	}
+	test {
+		output.resourcesDir = "build/classes/test"
+	}
+}
+
+def compileATL(outputDir, module) {
+	ant.emftvm_compile(module: module, modulepath: 'src/fr/eseo/atol/examples/cps/atl/', outputpath: "${outputDir}", charset: 'UTF-8')
+}
+
+
+task compileATL {
+	String outputDir = "${sourceSets.main.output.resourcesDir}/fr/eseo/atol/examples/cps/atl/"
+	inputs.files('src/fr/eseo/atol/examples/cps/atl/CPS2Deployment-explicitRuleCall.atl')
+	outputs.files("${outputDir}/CPS2Deployment-explicitRuleCall.emftvm")
+	doLast {
+		ant.taskdef(name: 'emftvm_compile',
+			classname: 'org.eclipse.m2m.atl.emftvm.ant.CompileTask',
+			classpath: configurations.emftvm_compile.asPath)
+		compileATL(outputDir, 'CPS2Deployment-explicitRuleCall')
+	}
+}
+
+processResources.dependsOn(compileATL)
+

@@ -1,0 +1,123 @@
+-- @atlcompiler atl2010
+-- @path Deployment=/org.eclipse.viatra.examples.cps.deployment/model/deployment.ecore
+-- @path CPS=/org.eclipse.viatra.examples.cps.model/model/model.ecore
+-- @path Trace=/org.eclipse.viatra.examples.cps.traceability/model/traceability.ecore
+module CPS2Deployment;
+create OUT : Deployment, trace : Trace from IN : CPS;
+
+unique lazy rule CyberPhysicalSystem2Deployment {
+	from
+		s : CPS!CyberPhysicalSystem
+	to
+		t : Deployment!Deployment (
+			hosts <-	s.hostTypes.instances1->collect(e |
+							thisModule.HostInstance2DeploymentHost(e).t
+						)
+		)
+}
+
+unique lazy rule HostInstance2DeploymentHost {
+	from
+		s : CPS!HostInstance
+	to
+		t : Deployment!DeploymentHost (
+			ip <- s.nodeIp,
+			applications <-	s.applications->collect(e |
+								thisModule.ApplicationInstance2DeploymentApplication(e).t
+							)
+		)
+}
+
+unique lazy rule ApplicationInstance2DeploymentApplication {
+	from
+		s : CPS!ApplicationInstance
+	to
+		t : Deployment!DeploymentApplication (
+			id <- s.identifier,
+			behavior <-	thisModule.ApplicationInstanceAndStateMachine2DeploymentBehavior(
+							s, s.type.behavior
+						).t
+		)
+}
+
+helper context CPS!State def: validOutgoingTransitions : Collection(CPS!Transition) =
+	self.outgoingTransitions->reject(e | e.targetState.oclIsUndefined());
+
+unique lazy rule ApplicationInstanceAndStateMachine2DeploymentBehavior {
+	from
+		ai : CPS!ApplicationInstance,
+		sm : CPS!StateMachine
+	to
+		t : Deployment!DeploymentBehavior (
+			description <- sm.identifier,
+			states <-	sm.states->collect(e |
+							thisModule.ApplicationInstanceAndState2BehaviorState(
+								ai, e
+							).t
+						),
+			current <-	thisModule.ApplicationInstanceAndState2BehaviorState(
+							ai, sm.initial
+						).t,
+			transitions <-	sm.states.validOutgoingTransitions
+							->collect(e |
+								thisModule.ApplicationInstanceAndTransition2BehaviorTransition(
+									ai, e
+								).t
+							)
+		)
+}
+
+unique lazy rule ApplicationInstanceAndState2BehaviorState {
+	from
+		ai : CPS!ApplicationInstance,
+		s : CPS!State
+	to
+		t : Deployment!BehaviorState (
+			description <- s.identifier,
+			outgoing <-	s.validOutgoingTransitions->collect(e |
+							thisModule.ApplicationInstanceAndTransition2BehaviorTransition(
+								ai, e
+							).t
+						)
+		)
+}
+
+helper context CPS!ApplicationInstance def: candidateHostInstances : Collection(CPS!HostInstance) =
+	let hi : CPS!HostInstance = self.allocatedTo in
+	hi.communicateWith.concat(hi);
+
+helper context CPS!ApplicationInstance def: transitionsFromApplicationInstances : Collection(Sequence(CPS!Identifiable)) =
+	self.type.behavior.states.validOutgoingTransitions->collect(e | Sequence {self, e}.__immutable());
+
+-- Added this helper to cache the value
+helper context CPS!ApplicationInstance def: typeIdentifier : String =
+	self.type.identifier;
+
+unique lazy rule ApplicationInstanceAndTransition2BehaviorTransition {
+	from
+		ai : CPS!ApplicationInstance,
+		s : CPS!Transition
+	to
+		t : Deployment!BehaviorTransition (
+			description <- s.identifier,
+			to <-	s.targetState->collect(e |
+						thisModule.ApplicationInstanceAndState2BehaviorState(
+							ai, e
+						).t
+					),
+			trigger <-	let sendParts : OclAny = s.sendParts in
+						(let receiverAppInstances : OclAny =
+							ai.candidateHostInstances.applications
+							->selectBy(e | sendParts.key = e.typeIdentifier)
+						in
+						receiverAppInstances.transitionsFromApplicationInstances
+						->selectBy(e | sendParts.value = e->last().oclAsType(CPS!Transition).waitParts)
+						->collect(e |
+							thisModule.ApplicationInstanceAndTransition2BehaviorTransition(
+								e->first().oclAsType(CPS!ApplicationInstance),
+								e->last().oclAsType(CPS!Transition)
+							).t
+						)
+						).oclAsType(Deployment!BehaviorTransition)
+		)
+}
