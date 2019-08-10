@@ -5,6 +5,7 @@ plugins {
 xtext.version = "2.17.0"
 
 repositories {
+    mavenLocal()
 	mavenCentral()
 
 	// for ATL
@@ -17,6 +18,14 @@ configurations {
 
 dependencies {
 	compile 'org.eclipse.xtend:org.eclipse.xtend.lib:2.17.0'
+
+    compile 'org.eclipse.viatra.examples.cps:org.eclipse.viatra.examples.cps.model:2.2.0-SNAPSHOT'
+    compile 'org.eclipse.viatra.examples.cps:org.eclipse.viatra.examples.cps.deployment:2.2.0-SNAPSHOT'
+    compile 'org.eclipse.viatra.examples.cps:org.eclipse.viatra.examples.cps.traceability:2.2.0-SNAPSHOT'
+    compile 'org.eclipse.viatra.examples.cps:org.eclipse.viatra.examples.cps.xform.m2m.tests:2.2.0-SNAPSHOT'
+    compile 'org.eclipse.viatra.examples.cps:org.eclipse.viatra.examples.cps.xform.m2m.launcher:2.2.0-SNAPSHOT'
+    compile 'org.eclipse.viatra.examples.cps:org.eclipse.viatra.examples.cps.xform.m2m.util:2.2.0-SNAPSHOT'
+
 
 	// could be compileOnly for ATOL, but must be compile for ATL
 	compile('org.eclipse.m2m.atl:org.eclipse.m2m.atl.emftvm.compiler:4.0.0-1') {
@@ -55,7 +64,6 @@ eclipse {
 mainClassName = 'fr.eseo.atol.examples.cps.tests.IncrementalATL'
 applicationDefaultJvmArgs = ["-Xmx12288m"]
 sourceCompatibility = 1.8
-
 
 sourceSets {
 	main {

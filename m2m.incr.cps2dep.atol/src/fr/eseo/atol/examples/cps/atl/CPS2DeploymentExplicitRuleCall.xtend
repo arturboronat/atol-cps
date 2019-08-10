@@ -5,14 +5,16 @@ import fr.eseo.atol.gen.ATOLGen
 import fr.eseo.atol.gen.ATOLGen.Metamodel
 import java.util.HashMap
 import org.eclipse.papyrus.aof.core.IBox
-import org.eclipse.viatra.examples.cps.CPS.Identifiable
-import org.eclipse.viatra.examples.cps.CPS.Transition
+import org.eclipse.papyrus.aof.operations.GroupByAs
+import org.eclipse.viatra.examples.cps.cyberPhysicalSystem.Identifiable
+import org.eclipse.viatra.examples.cps.cyberPhysicalSystem.Transition
 import org.eclipse.viatra.examples.cps.deployment.BehaviorState
 import org.eclipse.viatra.examples.cps.deployment.BehaviorTransition
 import org.eclipse.viatra.examples.cps.deployment.DeploymentApplication
 import org.eclipse.viatra.examples.cps.deployment.DeploymentBehavior
 import org.eclipse.viatra.examples.cps.deployment.DeploymentElement
 import org.eclipse.viatra.examples.cps.deployment.DeploymentHost
+import org.eclipse.viatra.examples.cps.xform.m2m.util.SignalUtil
 
 @ATOLGen(transformation="src/fr/eseo/atol/examples/cps/atl/CPS2Deployment-explicitRuleCall.atl", metamodels=#[
 	@Metamodel(name="CPS", impl=CPS),

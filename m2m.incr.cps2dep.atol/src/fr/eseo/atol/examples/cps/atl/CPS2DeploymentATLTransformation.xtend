@@ -4,7 +4,8 @@ import org.apache.log4j.Logger
 import org.eclipse.papyrus.aof.core.AOFFactory
 import org.eclipse.papyrus.aof.core.IBox
 import org.eclipse.papyrus.aof.core.impl.operation.Copy
-import org.eclipse.viatra.examples.cps.traces.CPSToDeployment
+//import org.eclipse.viatra.examples.cps.traces.CPSToDeployment
+import org.eclipse.viatra.examples.cps.traceability.CPSToDeployment
 
 import static com.google.common.base.Preconditions.*
 
