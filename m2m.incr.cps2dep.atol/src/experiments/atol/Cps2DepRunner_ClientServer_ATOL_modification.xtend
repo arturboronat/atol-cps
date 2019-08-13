@@ -90,6 +90,7 @@ class Cps2DepRunner_ClientServer_ATOL_modification extends BenchmarkRunner {
 	override doTransformation() {
 		val appID = "new.app.instance" + "_NEW" // nextModificationIndex 
 		appType.prepareApplicationInstanceWithId(appID, hostInstance)
+		xform.execute()
 	}
 	
 	override doSave(String iteration) {
