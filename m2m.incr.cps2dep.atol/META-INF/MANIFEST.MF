@@ -8,18 +8,8 @@ Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: CPS,
- CPS.impl,
- CPS.util,
- org.eclipse.viatra.examples.cps.CPS,
- org.eclipse.viatra.examples.cps.CPS.util,
- org.eclipse.viatra.examples.cps.deployment,
- org.eclipse.viatra.examples.cps.deployment.util,
- org.eclipse.viatra.examples.cps.traces,
- org.eclipse.viatra.examples.cps.traces.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.viatra.examples.cps.CPS;visibility:=reexport,
- org.eclipse.viatra.examples.cps.deployment;visibility:=reexport,
- ttc2019.metamodels;bundle-version="1.0.0"
+ org.eclipse.viatra.examples.cps.deployment;visibility:=reexport
 Bundle-ActivationPolicy: lazy
