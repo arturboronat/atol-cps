@@ -83,13 +83,13 @@ class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRun
 	
 	override doInitialization() {
 		xform = new CPS2DeploymentATLTransformation(cps2dep)
+		xform.execute()
 		appType = cps2dep.cps.appTypes.findFirst[it.identifier.contains("Client")]
 		hostInstance = cps2dep.cps.hostTypes.findFirst[it.identifier.contains("client")].instances.head
 	}
 	override doTransformation() {
 		val appID = "new.app.instance" + "_NEW" // nextModificationIndex 
 		appType.prepareApplicationInstanceWithId(appID, hostInstance)
-		xform.execute()
 	}
 	
 	override doSave(String iteration) {

@@ -429,7 +429,7 @@ class CPS2DeploymentAOFTransformation {
 			t.start
 			t.join
 
-			println('''Created «nbTargetElements» target elements & «mapping.traces.size» trace elements.''')
+			// println('''Created «nbTargetElements» target elements & «mapping.traces.size» trace elements.''')
 		}
 	}
 

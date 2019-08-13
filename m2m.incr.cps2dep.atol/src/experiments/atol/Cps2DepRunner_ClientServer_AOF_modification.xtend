@@ -1,6 +1,7 @@
 package experiments.atol
 
 import experiments.utils.BenchmarkRunner
+import fr.eseo.atol.examples.cps.aof.CPS2DeploymentAOFTransformation
 import fr.eseo.atol.examples.cps.atl.CPS2DeploymentATLTransformation
 import java.io.File
 import java.io.IOException
@@ -26,7 +27,7 @@ import org.eclipse.viatra.examples.cps.traceability.CPSToDeployment
 import org.eclipse.viatra.examples.cps.traceability.TraceabilityFactory
 import org.eclipse.viatra.examples.cps.traceability.TraceabilityPackage
 
-class Cps2DepRunner_ClientServer_ATOL_modification extends BenchmarkRunner {
+class Cps2DepRunner_ClientServer_AOF_modification extends BenchmarkRunner {
 
 
 	val trafo = 'clientServer'
@@ -39,13 +40,13 @@ class Cps2DepRunner_ClientServer_ATOL_modification extends BenchmarkRunner {
 
 	var String iteration
 	var CPSToDeployment cps2dep
-    var CPS2DeploymentATLTransformation xform 
+    var CPS2DeploymentAOFTransformation xform 
     
     extension CPSModelBuilderUtil builderUtil = new CPSModelBuilderUtil
      
     
 	override getIdentifier() {
-		"cps2dep_clientServer_atol_incr_modification"
+		"cps2dep_clientServer_aof_incr_modification"
 	}
 	
 	override getIterations() {
@@ -55,7 +56,7 @@ class Cps2DepRunner_ClientServer_ATOL_modification extends BenchmarkRunner {
 	}
     
 	def static void main(String[] args) {
-		val runner =  new Cps2DepRunner_ClientServer_ATOL_modification
+		val runner =  new Cps2DepRunner_ClientServer_AOF_modification
 //		runner.debug = true
 		runner.runBenchmark
 	
@@ -65,7 +66,7 @@ class Cps2DepRunner_ClientServer_ATOL_modification extends BenchmarkRunner {
 		doStandaloneEMFSetup()
 		
 		var String inputModelPath = '''«ROOT_PATH»/m2m.batch.data/cps2dep/«trafo»/cps/'''
-		var String outputModelPath = '''«ROOT_PATH»/m2m.batch.data/cps2dep/«trafo»/deployment/atol'''
+		var String outputModelPath = '''«ROOT_PATH»/m2m.batch.data/cps2dep/«trafo»/deployment/aof'''
 		
 		cps2dep = preparePersistedCPSModel(
 			URI.createFileURI(new File(inputModelPath).absolutePath),
@@ -80,7 +81,7 @@ class Cps2DepRunner_ClientServer_ATOL_modification extends BenchmarkRunner {
 	var HostInstance hostInstance
 	
 	override doInitialization() {
-		xform = new CPS2DeploymentATLTransformation(cps2dep)
+		xform = new CPS2DeploymentAOFTransformation(cps2dep)
 		xform.execute()
 		appType = cps2dep.cps.appTypes.findFirst[it.identifier.contains("Client")]
 		hostInstance = cps2dep.cps.hostTypes.findFirst[it.identifier.contains("client")].instances.head
