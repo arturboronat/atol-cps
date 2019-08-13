@@ -281,8 +281,7 @@ class CPS2DeploymentAOFTransformation {
 		cache(source, _receiverAppInstances)
 	}
 // @end Helpers
-
-	val Rule<Pair<ApplicationInstance, Transition>, BehaviorTransition> transition2BehaviorTransition =
+	val Rule<Pair<ApplicationInstance, Transition>, BehaviorTransition> transition2BehaviorTransition_ =
 		new Rule(DEP.BehaviorTransition.clazz)[Pair<ApplicationInstance, Transition> source, target |
 			identifiable2DeploymentElement(source.value, target)
 
@@ -309,6 +308,8 @@ class CPS2DeploymentAOFTransformation {
 									transition2BehaviorTransition
 								).asOrderedSet
 		]
+
+	var Rule<Pair<ApplicationInstance, Transition>, BehaviorTransition> transition2BehaviorTransition = transition2BehaviorTransition_
 
 	val _waitParts = [Transition t |
 		t._action.collect[e |
