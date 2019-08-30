@@ -48,7 +48,7 @@ class CPS2DeploymentATLTransformation {
 	 */
 	def void execute() {
 		if(firstRun) {
-			println("RUNNING")
+			// println("RUNNING")
 			firstRun = false
 
 			// Register default instances required by AOF

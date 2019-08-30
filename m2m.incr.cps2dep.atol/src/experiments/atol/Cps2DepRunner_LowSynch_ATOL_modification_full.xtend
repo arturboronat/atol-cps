@@ -26,13 +26,11 @@ import org.eclipse.viatra.examples.cps.traceability.CPSToDeployment
 import org.eclipse.viatra.examples.cps.traceability.TraceabilityFactory
 import org.eclipse.viatra.examples.cps.traceability.TraceabilityPackage
 
-class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRunner {
+class Cps2DepRunner_LowSynch_ATOL_modification_full extends FullBenchmarkRunner {
 
 
-	val trafo = 'clientServer'
+	val trafo = 'lowSynch'
     val ROOT_PATH = '/Users/ab373/Documents/ArturData/WORK/git/viatra-cps-batch-benchmark'
-
-
 
 
 	var CPSToDeployment cps2dep
@@ -46,14 +44,13 @@ class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRun
 	}
 	
 	override getIterations() {
-		#[1, 1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
-//		#[1, 1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
-//		#[1]
+		#[1, 1, 8, 16, 32, 64, 128, 256]
 	}
     
 	def static void main(String[] args) {
-		val runner =  new Cps2DepRunner_ClientServer_ATOL_modification_full
+		val runner =  new Cps2DepRunner_LowSynch_ATOL_modification_full
 		runner.runBenchmark(10)
+	
 	} 
 
 	override doLoad(String iteration) {
@@ -77,9 +74,10 @@ class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRun
 	override doInitialization() {
 		xform = new CPS2DeploymentATLTransformation(cps2dep)
 		xform.execute()
-		appType = cps2dep.cps.appTypes.findFirst[it.identifier.contains("Client")]
-		hostInstance = cps2dep.cps.hostTypes.findFirst[it.identifier.contains("client")].instances.head
+		appType = cps2dep.cps.appTypes.findFirst[it.identifier.contains("AC")]
+		hostInstance = cps2dep.cps.hostTypes.findFirst[it.identifier.contains("HC")].instances.head
 	}
+	
 	override doTransformation() {
 		val appID = "new.app.instance" + "_NEW" // nextModificationIndex 
 		appType.prepareApplicationInstanceWithId(appID, hostInstance)

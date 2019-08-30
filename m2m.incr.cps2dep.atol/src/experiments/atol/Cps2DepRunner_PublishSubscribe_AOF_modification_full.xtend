@@ -26,13 +26,11 @@ import org.eclipse.viatra.examples.cps.traceability.CPSToDeployment
 import org.eclipse.viatra.examples.cps.traceability.TraceabilityFactory
 import org.eclipse.viatra.examples.cps.traceability.TraceabilityPackage
 
-class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRunner {
+class Cps2DepRunner_PublishSubscribe_AOF_modification_full extends FullBenchmarkRunner {
 
 
-	val trafo = 'clientServer'
+	val trafo = 'publishSubscribe'
     val ROOT_PATH = '/Users/ab373/Documents/ArturData/WORK/git/viatra-cps-batch-benchmark'
-
-
 
 
 	var CPSToDeployment cps2dep
@@ -42,25 +40,24 @@ class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRun
      
     
 	override getIdentifier() {
-		'''cps2dep_«trafo»_atol_incr_modification'''
+		'''cps2dep_«trafo»_aof_incr_modification'''
 	}
 	
 	override getIterations() {
 		#[1, 1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
-//		#[1, 1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
-//		#[1]
 	}
     
 	def static void main(String[] args) {
-		val runner =  new Cps2DepRunner_ClientServer_ATOL_modification_full
+		val runner =  new Cps2DepRunner_PublishSubscribe_AOF_modification_full
 		runner.runBenchmark(10)
+	
 	} 
 
 	override doLoad(String iteration) {
 		doStandaloneEMFSetup()
 		
 		var String inputModelPath = '''«ROOT_PATH»/m2m.batch.data/cps2dep/«trafo»/cps/'''
-		var String outputModelPath = '''«ROOT_PATH»/m2m.batch.data/cps2dep/«trafo»/deployment/atol'''
+		var String outputModelPath = '''«ROOT_PATH»/m2m.batch.data/cps2dep/«trafo»/deployment/aof'''
 		
 		cps2dep = preparePersistedCPSModel(
 			URI.createFileURI(new File(inputModelPath).absolutePath),
@@ -80,6 +77,7 @@ class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRun
 		appType = cps2dep.cps.appTypes.findFirst[it.identifier.contains("Client")]
 		hostInstance = cps2dep.cps.hostTypes.findFirst[it.identifier.contains("client")].instances.head
 	}
+	
 	override doTransformation() {
 		val appID = "new.app.instance" + "_NEW" // nextModificationIndex 
 		appType.prepareApplicationInstanceWithId(appID, hostInstance)

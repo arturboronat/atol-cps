@@ -31,14 +31,8 @@ class Cps2DepRunner_ClientServer_AOF_modification extends BenchmarkRunner {
 
 
 	val trafo = 'clientServer'
-//    val ROOT_PATH = '..'
     val ROOT_PATH = '/Users/ab373/Documents/ArturData/WORK/git/viatra-cps-batch-benchmark'
 
-
-
-
-
-	var String iteration
 	var CPSToDeployment cps2dep
     var CPS2DeploymentAOFTransformation xform 
     
@@ -46,13 +40,11 @@ class Cps2DepRunner_ClientServer_AOF_modification extends BenchmarkRunner {
      
     
 	override getIdentifier() {
-		"cps2dep_clientServer_aof_incr_modification"
+		'''cps2dep_«trafo»_aof_incr_modification'''
 	}
 	
 	override getIterations() {
 		#[1, 1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
-//		#[1, 1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
-//		#[1]
 	}
     
 	def static void main(String[] args) {
@@ -70,7 +62,7 @@ class Cps2DepRunner_ClientServer_AOF_modification extends BenchmarkRunner {
 		
 		cps2dep = preparePersistedCPSModel(
 			URI.createFileURI(new File(inputModelPath).absolutePath),
-			'''clientServer_«iteration»''',
+			'''«trafo»_«iteration»''',
 			URI.createFileURI(new File(outputModelPath).absolutePath)
 		)
 		
@@ -153,11 +145,6 @@ class Cps2DepRunner_ClientServer_AOF_modification extends BenchmarkRunner {
 		val depRes = rs.createResource(targetModelNameURI.appendFileExtension("deployment.xmi"))
 		val trcRes = rs.createResource(targetModelNameURI.appendFileExtension("traceability.xmi"))
 		
-		// Artur: to load the model
-//		val cps = createCyberPhysicalSystem => [
-//			identifier = modelName
-//		]
-//		cpsRes.contents += cps
 		val cps = cpsRes.contents.head as CyberPhysicalSystem
 		
 		val dep = DeploymentFactory.eINSTANCE.createDeployment

@@ -1,6 +1,6 @@
 package experiments.atol
 
-import experiments.utils.FullBenchmarkRunner
+import experiments.utils.BenchmarkRunner
 import fr.eseo.atol.examples.cps.atl.CPS2DeploymentATLTransformation
 import java.io.File
 import java.io.IOException
@@ -26,13 +26,11 @@ import org.eclipse.viatra.examples.cps.traceability.CPSToDeployment
 import org.eclipse.viatra.examples.cps.traceability.TraceabilityFactory
 import org.eclipse.viatra.examples.cps.traceability.TraceabilityPackage
 
-class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRunner {
+class Cps2DepRunner_PublishSubscribe_ATOL_modification extends BenchmarkRunner {
 
 
-	val trafo = 'clientServer'
+	val trafo = 'publishSubscribe'
     val ROOT_PATH = '/Users/ab373/Documents/ArturData/WORK/git/viatra-cps-batch-benchmark'
-
-
 
 
 	var CPSToDeployment cps2dep
@@ -47,13 +45,12 @@ class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRun
 	
 	override getIterations() {
 		#[1, 1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
-//		#[1, 1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
-//		#[1]
 	}
     
 	def static void main(String[] args) {
-		val runner =  new Cps2DepRunner_ClientServer_ATOL_modification_full
-		runner.runBenchmark(10)
+		val runner =  new Cps2DepRunner_PublishSubscribe_ATOL_modification
+		runner.runBenchmark
+	
 	} 
 
 	override doLoad(String iteration) {
@@ -80,22 +77,23 @@ class Cps2DepRunner_ClientServer_ATOL_modification_full extends FullBenchmarkRun
 		appType = cps2dep.cps.appTypes.findFirst[it.identifier.contains("Client")]
 		hostInstance = cps2dep.cps.hostTypes.findFirst[it.identifier.contains("client")].instances.head
 	}
+	
 	override doTransformation() {
 		val appID = "new.app.instance" + "_NEW" // nextModificationIndex 
 		appType.prepareApplicationInstanceWithId(appID, hostInstance)
 	}
 	
 	override doSave(String iteration) {
-//		try {
-//	      cps2dep.deployment.eResource.save(Collections.EMPTY_MAP);
-//	    } catch (IOException e) {
-//	      e.printStackTrace();
-//	    }
-//		try {
-//	      cps2dep.eResource.save(Collections.EMPTY_MAP);
-//	    } catch (IOException e) {
-//	      e.printStackTrace();
-//	    }
+		try {
+	      cps2dep.deployment.eResource.save(Collections.EMPTY_MAP);
+	    } catch (IOException e) {
+	      e.printStackTrace();
+	    }
+		try {
+	      cps2dep.eResource.save(Collections.EMPTY_MAP);
+	    } catch (IOException e) {
+	      e.printStackTrace();
+	    }
 	}
 	
 	override doDispose() {

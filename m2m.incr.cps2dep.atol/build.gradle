@@ -64,8 +64,7 @@ eclipse {
 	}
 }
 
-mainClassName = "experiments.atol.Cps2DepRunner_ClientServer_ATOL_modification_full"
-applicationDefaultJvmArgs = ["-Xmx12288m"]
+
 sourceCompatibility = 1.8
 
 sourceSets {
@@ -111,3 +110,9 @@ task compileATL {
 
 processResources.dependsOn(compileATL)
 
+
+
+mainClassName = "experiments.atol.Cps2DepRunner_ClientServer_AOF_modification"
+// mainClassName = "experiments.atol.Cps2DepRunner_ClientServer_ATOL_modification"
+// mainClassName = "experiments.atol.Cps2DepRunner_ClientServer_ATOL_modification_full"
+applicationDefaultJvmArgs = ["-Xmx12288m"]
